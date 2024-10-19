@@ -60,7 +60,7 @@ def download_txt(url, filename, book_id, folder="books/"):
         file.write(response.content)
 
 
-def download_image(url, img, folder="images/"):
+def download_image(img, folder="images/"):
     create_path(folder)
     filename = urlparse(img)
     filename = os.path.basename(filename.path)
@@ -69,22 +69,34 @@ def download_image(url, img, folder="images/"):
 
     response = get_response(img)
     response.raise_for_status()
-
     with open(filepath, "wb") as file:
         file.write(response.content)
+
+
+def get_comments(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "lxml")
+
+    comments = soup.find_all("div", class_="texts")
+    for comment in comments:
+        comment = comment.find("span")
+        comment = comment.text
+        print(comment)
 
 
 def main():
     for book_id in range(10):
         url = f"https://tululu.org/txt.php?id={book_id+1}"
-        url_book = f"https://tululu.org/b{book_id+1}"
-        filename = get_name_book(url_book)
-        img = get_img_book(url_book)
+        url_book_site = f"https://tululu.org/b{book_id+1}"
+        filename = get_name_book(url_book_site)
+        img = get_img_book(url_book_site)
         if filename is None:
             continue
         else:
             download_txt(url, filename, book_id)
-            download_image(url, img)
+            download_image(img)
+            get_comments(url_book_site)
 
 
 if "__main__" == __name__:
