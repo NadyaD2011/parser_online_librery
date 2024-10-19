@@ -56,7 +56,7 @@ def download_txt(url, filename, book_id, folder="books/"):
     response = get_response(url)
     filename = sanitize_filename(filename)
     filepath = os.path.join(folder, filename)
-    
+
     with open(filepath, "wb") as file:
         file.write(response.content)
 
@@ -84,7 +84,23 @@ def get_comments(url):
     for comment in comments:
         comment = comment.find("span")
         comment = comment.text
-        print(comment)
+
+        return comment
+
+
+def get_genre_book(url):
+    genres = []
+    response = requests.get(url)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "lxml")
+
+    genres_site = soup.find("span", class_="d_book").find_all('a')
+    for genre in genres_site:
+        genre = genre.text
+        genres.append(genre)
+    print(genres)    
+
+    return genres
 
 
 def main():
@@ -96,9 +112,10 @@ def main():
         if filename is None:
             continue
         else:
-            download_txt(url, filename, book_id)
-            download_image(img)
-            get_comments(url_book_site)
+            # download_txt(url, filename, book_id)
+            # download_image(img)
+            # get_comments(url_book_site)
+            get_genre_book(url_book_site)
 
 
 if "__main__" == __name__:
