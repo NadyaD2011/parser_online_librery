@@ -56,6 +56,7 @@ def download_txt(url, filename, book_id, folder="books/"):
     response = get_response(url)
     filename = sanitize_filename(filename)
     filepath = os.path.join(folder, filename)
+    
     with open(filepath, "wb") as file:
         file.write(response.content)
 
@@ -69,6 +70,7 @@ def download_image(img, folder="images/"):
 
     response = get_response(img)
     response.raise_for_status()
+
     with open(filepath, "wb") as file:
         file.write(response.content)
 
