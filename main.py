@@ -49,6 +49,11 @@ def parse_book_page(book_page, url_book):
         genres = []
         book_info = {}
 
+        href = soup.select_one(".d_book a[title*='скачать книгу txt']")["href"]
+
+        if not href:
+            raise Exception
+        
         title, author = soup.select_one("body div[id=content] h1").text.split(
             " \xa0 :: \xa0 "
         )
