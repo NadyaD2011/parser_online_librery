@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import os
 from pathvalidate import sanitize_filename
 from urllib.parse import urljoin, urlparse
+import argparse
 
 
 def get_response(url):
@@ -53,7 +54,7 @@ def parse_book_page(book_page, url_book):
 
         if not href:
             raise Exception
-        
+
         title, author = soup.select_one("body div[id=content] h1").text.split(
             " \xa0 :: \xa0 "
         )
@@ -82,9 +83,20 @@ def parse_book_page(book_page, url_book):
 
 
 def main():
-    for book_id in range(10):
-        url = f"https://tululu.org/txt.php?id={book_id+1}"
-        url_book_site = f"https://tululu.org/b{book_id+1}"
+    parser = argparse.ArgumentParser(
+        description="Программа скачивает книги с сайта tululu.org и достаёт данные о книге"
+    )
+    parser.add_argument(
+        "-start", "--start_id", help="Первая книганужная вам", default=1, type=int
+    )
+    parser.add_argument(
+        "-end", "--end_id", help="Последняя книга нужная вам", default=10, type=int
+    )
+    args = parser.parse_args()
+
+    for book_id in range(args.start_id, args.end_id):
+        url = f"https://tululu.org/txt.php?id={book_id}"
+        url_book_site = f"https://tululu.org/b{book_id}"
         book_page = requests.get(url_book_site)
         book_page.raise_for_status()
         book_page = book_page.text
@@ -94,8 +106,8 @@ def main():
         elif book_info is None:
             continue
         else:
-            download_txt(url, book_info['title'], book_id)
-            download_image(book_info['cover_path'])
+            download_txt(url, book_info["title"], book_id)
+            download_image(book_info["cover_path"])
 
 
 if "__main__" == __name__:
