@@ -18,43 +18,10 @@ def create_path(directory):
         os.makedirs(directory)
 
 
-def get_name_book(url_book):
-    try:
-        response = get_response(url_book)
-        soup = BeautifulSoup(response.text, "lxml")
-        href = soup.select_one(".d_book a[title*='скачать книгу txt']")["href"]
-
-        if not href:
-            raise Exception
-
-        content_text, content_auhtor = soup.select_one(
-            "body div[id=content] h1"
-        ).text.split(" :: ")
-        content_text = content_text.strip("\xa0").strip(" ")
-
-        return content_text
-
-    except Exception:
-        pass
-
-
-def get_img_book(url_book):
-    try:
-        response = get_response(url_book)
-        soup = BeautifulSoup(response.text, "lxml")
-        img = soup.find("div", class_="bookimage").find("a").find("img")["src"]
-        url_book = urljoin(url_book, img)
-        return url_book
-
-    except Exception:
-        pass
-
-
 def download_txt(url, filename, book_id, folder="books/"):
     create_path(folder)
     filename = f"{book_id+1}.{filename}.txt"
     response = get_response(url)
-    filename = sanitize_filename(filename)
     filepath = os.path.join(folder, filename)
 
     with open(filepath, "wb") as file:
@@ -75,47 +42,55 @@ def download_image(img, folder="images/"):
         file.write(response.content)
 
 
-def get_comments(url):
-    response = requests.get(url)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "lxml")
+def parse_book_page(book_page, url_book):
+    try:
+        soup = BeautifulSoup(book_page, "lxml")
+        comments = []
+        genres = []
+        book_info = {}
 
-    comments = soup.find_all("div", class_="texts")
-    for comment in comments:
-        comment = comment.find("span")
-        comment = comment.text
+        title, author = soup.select_one("body div[id=content] h1").text.split(
+            " \xa0 :: \xa0 "
+        )
+        title = sanitize_filename(title)
+        book_info["author"] = author
+        book_info["title"] = title
 
-        return comment
+        img = soup.find("div", class_="bookimage").find("a").find("img")["src"]
+        cover_path = urljoin(url_book, img)
+        book_info["cover_path"] = cover_path
 
+        all_comments = soup.find_all("div", class_="texts")
+        for comment in all_comments:
+            comments.append(comment.find("span").text)
+        book_info["comments"] = comments
 
-def get_genre_book(url):
-    genres = []
-    response = requests.get(url)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "lxml")
+        genres_site = soup.find("span", class_="d_book").find_all("a")
+        for genre in genres_site:
+            genres.append(genre.text)
+        book_info["genres"] = genres
 
-    genres_site = soup.find("span", class_="d_book").find_all('a')
-    for genre in genres_site:
-        genre = genre.text
-        genres.append(genre)
-    print(genres)    
+        return book_info
 
-    return genres
+    except Exception:
+        pass
 
 
 def main():
     for book_id in range(10):
         url = f"https://tululu.org/txt.php?id={book_id+1}"
         url_book_site = f"https://tululu.org/b{book_id+1}"
-        filename = get_name_book(url_book_site)
-        img = get_img_book(url_book_site)
-        if filename is None:
+        book_page = requests.get(url_book_site)
+        book_page.raise_for_status()
+        book_page = book_page.text
+        book_info = parse_book_page(book_page, url_book_site)
+        if book_info is None:
+            continue
+        elif book_info is None:
             continue
         else:
-            # download_txt(url, filename, book_id)
-            # download_image(img)
-            # get_comments(url_book_site)
-            get_genre_book(url_book_site)
+            download_txt(url, book_info['title'], book_id)
+            download_image(book_info['cover_path'])
 
 
 if "__main__" == __name__:
