@@ -48,7 +48,6 @@ def parse_book_page(book_page, url_book):
         soup = BeautifulSoup(book_page, "lxml")
         comments = []
         genres = []
-        book_info = {}
 
         href = soup.select_one(".d_book a[title*='скачать книгу txt']")["href"]
 
@@ -59,22 +58,25 @@ def parse_book_page(book_page, url_book):
             " \xa0 :: \xa0 "
         )
         title = sanitize_filename(title)
-        book_info["author"] = author
-        book_info["title"] = title
 
         img = soup.find("div", class_="bookimage").find("a").find("img")["src"]
         cover_path = urljoin(url_book, img)
-        book_info["cover_path"] = cover_path
 
         all_comments = soup.find_all("div", class_="texts")
         for comment in all_comments:
             comments.append(comment.find("span").text)
-        book_info["comments"] = comments
 
         genres_site = soup.find("span", class_="d_book").find_all("a")
         for genre in genres_site:
             genres.append(genre.text)
-        book_info["genres"] = genres
+
+        book_info = {
+            "author": author,
+            "title": title,
+            "cover_path": cover_path,
+            "comments": comments,
+            "genres": genres,
+        }
 
         return book_info
 
