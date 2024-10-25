@@ -6,8 +6,8 @@ from urllib.parse import urljoin, urlparse
 import argparse
 
 
-def get_response(url):
-    response = requests.get(url)
+def get_response(url, params={}):
+    response = requests.get(url, params=params)
     response.raise_for_status()
 
     if response.content:
@@ -95,8 +95,7 @@ def main():
         url = "https://tululu.org/txt.php"
         url_book_site = f"https://tululu.org/b{book_id}"
         params = {'id': book_id}
-        book_page = requests.get(url_book_site, params=params)
-        book_page.raise_for_status()
+        book_page = get_response(url_book_site, params)
         book_page = book_page.text
         book_data = parse_book_page(book_page, url_book_site)
         if book_data is None:
