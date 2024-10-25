@@ -14,13 +14,8 @@ def get_response(url):
         return response
 
 
-def create_path(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-
 def download_txt(url, filename, book_id, folder="books/"):
-    create_path(folder)
+    os.makedirs(folder, exist_ok=True)
     filename = f"{book_id+1}.{filename}.txt"
     response = get_response(url)
     filepath = os.path.join(folder, filename)
@@ -30,7 +25,7 @@ def download_txt(url, filename, book_id, folder="books/"):
 
 
 def download_image(img, folder="images/"):
-    create_path(folder)
+    os.makedirs(folder, exist_ok=True)
     filename = urlparse(img)
     filename = os.path.basename(filename.path)
     filename = sanitize_filename(filename)
