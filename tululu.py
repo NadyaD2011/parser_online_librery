@@ -70,7 +70,7 @@ def parse_book_page(book_page, url_book):
         for genre in genres_site:
             genres.append(genre.text)
 
-        book_info = {
+        book_data = {
             "author": author,
             "title": title,
             "cover_path": cover_path,
@@ -78,7 +78,7 @@ def parse_book_page(book_page, url_book):
             "genres": genres,
         }
 
-        return book_info
+        return book_data
 
     except Exception:
         pass
@@ -102,14 +102,14 @@ def main():
         book_page = requests.get(url_book_site)
         book_page.raise_for_status()
         book_page = book_page.text
-        book_info = parse_book_page(book_page, url_book_site)
-        if book_info is None:
+        book_data = parse_book_page(book_page, url_book_site)
+        if book_data is None:
             continue
-        elif book_info is None:
+        elif book_data is None:
             continue
         else:
-            download_txt(url, book_info["title"], book_id)
-            download_image(book_info["cover_path"])
+            download_txt(url, book_data["title"], book_id)
+            download_image(book_data["cover_path"])
 
 
 if "__main__" == __name__:
