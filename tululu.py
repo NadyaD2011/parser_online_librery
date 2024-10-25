@@ -92,9 +92,10 @@ def main():
     args = parser.parse_args()
 
     for book_id in range(args.start_id, args.end_id):
-        url = f"https://tululu.org/txt.php?id={book_id}"
+        url = "https://tululu.org/txt.php"
         url_book_site = f"https://tululu.org/b{book_id}"
-        book_page = requests.get(url_book_site)
+        params = {'id': book_id}
+        book_page = requests.get(url_book_site, params=params)
         book_page.raise_for_status()
         book_page = book_page.text
         book_data = parse_book_page(book_page, url_book_site)
