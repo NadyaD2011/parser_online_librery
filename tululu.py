@@ -16,7 +16,7 @@ def get_response(url):
 
 def download_txt(url, filename, book_id, folder="books/"):
     os.makedirs(folder, exist_ok=True)
-    filename = f"{book_id+1}.{filename}.txt"
+    filename = f"{book_id}.{filename}.txt"
     response = get_response(url)
     filepath = os.path.join(folder, filename)
 
