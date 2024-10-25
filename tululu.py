@@ -38,7 +38,7 @@ def download_image(img, folder="images/"):
         file.write(response.content)
 
 
-def parse_book_page(book_page, url_book):
+def parse_book_page(book_page, book_url):
     try:
         soup = BeautifulSoup(book_page, "lxml")
         comments = []
@@ -55,7 +55,7 @@ def parse_book_page(book_page, url_book):
         title = sanitize_filename(title)
 
         img = soup.find("div", class_="bookimage").find("a").find("img")["src"]
-        cover_path = urljoin(url_book, img)
+        cover_path = urljoin(book_url, img)
 
         all_comments = soup.find_all("div", class_="texts")
         for comment in all_comments:
