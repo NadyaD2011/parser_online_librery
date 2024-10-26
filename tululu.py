@@ -6,12 +6,9 @@ from urllib.parse import urljoin, urlparse
 import argparse
 
 
-def get_response(url, params={}):
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-
-    if response.content:
-        return response
+def check_for_redirect(response):
+    if response.history:
+        raise requests.HTTPError
 
 
 def download_txt(url, filename, book_id, folder="books/"):
