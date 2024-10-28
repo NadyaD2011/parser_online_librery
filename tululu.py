@@ -82,21 +82,21 @@ def main():
 
     for book_id in range(args.start_id, args.end_id):
         url = "https://tululu.org/txt.php"
-        url_book_site = f"https://tululu.org/b{book_id}/"
-        params = {"id": book_id}      
+        book_site_url = f"https://tululu.org/b{book_id}/"
+        params = {"id": book_id}
         try:
             response = requests.get(url, params=params)
             response.raise_for_status()
             check_for_redirect(response)
 
-            page_response = requests.get(url_book_site)
+            page_response = requests.get(book_site_url)
             page_response.raise_for_status()
             check_for_redirect(page_response)
 
-            book_data = parse_book_page(page_response)
+            book_elements = parse_book_page(page_response)
 
-            download_txt(response, book_data["title"], book_id)
-            download_image(book_data["cover_path"], url_book_site)
+            download_txt(response, book_elements["title"], book_id)
+            download_image(book_elements["cover_path"], book_site_url)
 
         except requests.HTTPError:
             print("Книга не найдена")
