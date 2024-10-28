@@ -4,6 +4,7 @@ import os
 from pathvalidate import sanitize_filename
 from urllib.parse import urljoin, urlparse
 import argparse
+import time
 
 
 def check_for_redirect(response):
@@ -101,6 +102,7 @@ def main():
             print("Книга не найдена")
         except requests.ConnectionError:
             print("Произошла ошибка подключения.")
+            time.sleep(3)
 
 
 if "__main__" == __name__:
