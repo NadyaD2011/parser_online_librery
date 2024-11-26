@@ -28,8 +28,19 @@ def save_json(books_elements):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Программа скачивает книги с сайта tululu.org и достаёт данные о книге"
+    )
+    parser.add_argument(
+        "-start", "--start_page", help="Первая книганужная вам", default=1, type=int
+    )
+    parser.add_argument(
+        "-end", "--end_page", help="Последняя книга нужная вам", default=701, type=int
+    )
+    args = parser.parse_args()
+
     books_elements = []
-    for index in range(1, 2):
+    for index in range(args.start_page, args.end_page):
         natune_book_url = f"https://tululu.org/l55/{index}"
         book_urls = url_nature_book(natune_book_url)
 
