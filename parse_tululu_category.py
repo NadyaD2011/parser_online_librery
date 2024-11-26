@@ -22,11 +22,9 @@ def url_nature_book(url):
     return book_urls
 
 
-def save_json(book_elements):
-    book_json = json.dumps(book_elements, ensure_ascii=False).encode("utf8")
-
+def save_json(books_elements):
     with open("book_elements.json", "w", encoding="utf8") as json_file:
-        json.dump(book_elements, json_file, ensure_ascii=False)
+        json.dump(books_elements, json_file, indent=2, ensure_ascii=False)
 
 
 def main():
