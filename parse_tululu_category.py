@@ -14,9 +14,9 @@ def url_nature_book(url):
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "lxml")
-    book_site_urls = soup.find_all("table", class_="d_book")
+    book_site_urls = soup.select("table.d_book")
     for book_url in book_site_urls:
-        book_url = book_url.find("a")["href"]
+        book_url = book_url.select_one("a")["href"]
         book_url = urljoin("https://tululu.org", book_url)
         book_urls.append(book_url)
     return book_urls
@@ -59,8 +59,8 @@ def main():
                     }
                 )
 
-                # download_txt(response, book_elements["title"])
-                # download_image(book_elements["cover_path"], book_url)
+                download_txt(response, book_elements["title"])
+                download_image(book_elements["cover_path"], book_url)
 
             except requests.HTTPError:
                 print("Книга не найдена")

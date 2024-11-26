@@ -45,12 +45,12 @@ def parse_book_page(page_response):
     )
     title = sanitize_filename(title)
 
-    img = soup.find("div", class_="bookimage").find("a").find("img")["src"]
+    img = soup.select_one("div.bookimage a img")["src"]
 
-    all_comments = soup.find_all("div", class_="texts")
-    comments = [comment.find("span").text for comment in all_comments]
+    all_comments = soup.select("div.texts")
+    comments = [comment.select_one("span").text for comment in all_comments]
 
-    genres_site = soup.find("span", class_="d_book").find_all("a")
+    genres_site = soup.select_one("span.d_book").select("a")
     genres = [genre.text for genre in genres_site]
 
     book_data = {
