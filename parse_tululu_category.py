@@ -37,6 +37,28 @@ def main():
     parser.add_argument(
         "-end", "--end_page", help="Последняя книга нужная вам", default=701, type=int
     )
+    parser.add_argument(
+        "-folder",
+        "--dest_folder",
+        help="Путь к каталогу с результатами парсинга",
+        default="media",
+        type=str,
+        action="store",
+    )
+    parser.add_argument(
+        "-skip_imgs",
+        "--skip_imgs",
+        help="Не скачивать картинки",
+        default=False,
+        action="store_false",
+    )
+    parser.add_argument(
+        "-skip_txt",
+        "--skip_txt",
+        help="Не скачивать текс",
+        default=False,
+        action="store_false",
+    )
     args = parser.parse_args()
 
     books_elements = []
@@ -63,15 +85,17 @@ def main():
                     {
                         "author": book_elements["author"],
                         "title": book_elements["title"],
-                        "img_src": f"images/{name_img}",
-                        "book_path": f"books/{book_elements['title']}.txt",
+                        "img_src": f"{args.dest_folder}/images/{name_img}",
+                        "book_path": f"{args.dest_folder}/books/{book_elements['title']}.txt",
                         "comments": book_elements["comments"],
                         "genres": book_elements["genres"],
                     }
                 )
 
-                download_txt(response, book_elements["title"])
-                download_image(book_elements["cover_path"], book_url)
+                if not (args.skip_imgs):
+                    download_image(book_elements["cover_path"], book_url)
+                if not (args.skip_txt):
+                    download_txt(response, book_elements["title"])
 
             except requests.HTTPError:
                 print("Книга не найдена")
