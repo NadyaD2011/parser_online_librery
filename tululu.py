@@ -12,9 +12,9 @@ def check_for_redirect(response):
         raise requests.HTTPError
 
 
-def download_txt(response, filename, book_id, folder="books/"):
+def download_txt(response, filename, folder="books/"):
     os.makedirs(folder, exist_ok=True)
-    filename = f"{book_id}.{filename}.txt"
+    filename = f"{filename}.txt"
     filepath = os.path.join(folder, filename)
 
     with open(filepath, "wb") as file:
@@ -91,7 +91,7 @@ def main():
 
             book_elements = parse_book_page(page_response)
 
-            download_txt(response, book_elements["title"], book_id)
+            download_txt(response, book_elements["title"])
             download_image(book_elements["cover_path"], book_site_url)
 
         except requests.HTTPError:
