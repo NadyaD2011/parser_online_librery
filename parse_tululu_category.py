@@ -32,7 +32,7 @@ def main():
         description="Программа скачивает книги с сайта tululu.org и достаёт данные о книге"
     )
     parser.add_argument(
-        "-start", "--start_page", help="Первая книганужная вам", default=1, type=int
+        "-start", "--start_page", help="Первая книга нужная вам", default=1, type=int
     )
     parser.add_argument(
         "-end", "--end_page", help="Последняя книга нужная вам", default=701, type=int
@@ -55,7 +55,7 @@ def main():
     parser.add_argument(
         "-skip_txt",
         "--skip_txt",
-        help="Не скачивать текс",
+        help="Не скачивать текст",
         default=False,
         action="store_false",
     )
