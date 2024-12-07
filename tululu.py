@@ -53,7 +53,7 @@ def parse_book_page(page_response):
     genres_site = soup.select_one("span.d_book").select("a")
     genres = [genre.text for genre in genres_site]
 
-    book_data = {
+    book_elements = {
         "author": author,
         "title": title,
         "cover_path": img,
@@ -61,7 +61,7 @@ def parse_book_page(page_response):
         "genres": genres,
     }
 
-    return book_data
+    return book_elements
 
 
 def main():

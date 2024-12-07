@@ -8,10 +8,11 @@ import json
 import os
 
 
-def url_nature_book(url):
+def get_url_nature_book(url):
     book_urls = []
     response = requests.get(url)
     response.raise_for_status()
+    check_for_redirect(response)
 
     soup = BeautifulSoup(response.text, "lxml")
     book_site_urls = soup.select("table.d_book")
@@ -49,27 +50,25 @@ def main():
         "-skip_imgs",
         "--skip_imgs",
         help="Не скачивать картинки",
-        default=False,
-        action="store_false",
+        action="store_true",
     )
     parser.add_argument(
         "-skip_txt",
         "--skip_txt",
         help="Не скачивать текст",
-        default=False,
-        action="store_false",
+        action="store_true",
     )
     args = parser.parse_args()
 
     books_elements = []
     for index in range(args.start_page, args.end_page):
-        natune_book_url = f"https://tululu.org/l55/{index}"
-        book_urls = url_nature_book(natune_book_url)
+        fantastic_books_url = f"https://tululu.org/l55/{index}"
+        book_urls = get_url_nature_book(fantastic_books_url)
 
         for book_url in book_urls:
             url_safe_book = "https://tululu.org/txt.php"
-            number_book = urlparse(book_url).path
-            params = {"id": number_book[2:-1]}
+            book_number = urlparse(book_url).path
+            params = {"id": book_number[2:-1]}
             try:
                 response = requests.get(url_safe_book, params=params)
                 response.raise_for_status()
@@ -80,12 +79,12 @@ def main():
                 check_for_redirect(page_response)
 
                 book_elements = parse_book_page(page_response)
-                name_img = os.path.split(book_elements["cover_path"])[-1]
+                img_name = os.path.split(book_elements["cover_path"])[-1]
                 books_elements.append(
                     {
                         "author": book_elements["author"],
                         "title": book_elements["title"],
-                        "img_src": f"{args.dest_folder}/images/{name_img}",
+                        "img_src": f"{args.dest_folder}/images/{img_name}",
                         "book_path": f"{args.dest_folder}/books/{book_elements['title']}.txt",
                         "comments": book_elements["comments"],
                         "genres": book_elements["genres"],
