@@ -8,19 +8,26 @@ import json
 import os
 
 
-def get_url_nature_book(url):
-    book_urls = []
-    response = requests.get(url)
-    response.raise_for_status()
-    check_for_redirect(response)
+def get_url_fantastic_book(url):
+    try:
+        book_urls = []
+        response = requests.get(url)
+        response.raise_for_status()
+        check_for_redirect(response)
 
-    soup = BeautifulSoup(response.text, "lxml")
-    book_site_urls = soup.select("table.d_book")
-    for book_url in book_site_urls:
-        book_url = book_url.select_one("a")["href"]
-        book_url = urljoin("https://tululu.org", book_url)
-        book_urls.append(book_url)
-    return book_urls
+        soup = BeautifulSoup(response.text, "lxml")
+        book_site_urls = soup.select("table.d_book")
+        for book_url in book_site_urls:
+            book_url = book_url.select_one("a")["href"]
+            book_url = urljoin("https://tululu.org", book_url)
+            book_urls.append(book_url)
+        return book_urls
+
+    except requests.HTTPError:
+        print("Книга не найдена")
+    except requests.ConnectionError:
+        print("Произошла ошибка подключения.")
+        time.sleep(10)
 
 
 def save_json(books_elements):
@@ -63,7 +70,7 @@ def main():
     books_elements = []
     for index in range(args.start_page, args.end_page):
         fantastic_books_url = f"https://tululu.org/l55/{index}"
-        book_urls = get_url_nature_book(fantastic_books_url)
+        book_urls = get_url_fantastic_book(fantastic_books_url)
 
         for book_url in book_urls:
             url_safe_book = "https://tululu.org/txt.php"
@@ -91,9 +98,9 @@ def main():
                     }
                 )
 
-                if not (args.skip_imgs):
+                if args.skip_imgs == False:
                     download_image(book_elements["cover_path"], book_url)
-                if not (args.skip_txt):
+                if args.skip_txt == False:
                     download_txt(response, book_elements["title"])
 
             except requests.HTTPError:
