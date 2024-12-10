@@ -9,25 +9,18 @@ import os
 
 
 def get_url_fantastic_book(url):
-    try:
-        book_urls = []
-        response = requests.get(url)
-        response.raise_for_status()
-        check_for_redirect(response)
+    book_urls = []
+    response = requests.get(url)
+    response.raise_for_status()
+    check_for_redirect(response)
 
-        soup = BeautifulSoup(response.text, "lxml")
-        book_site_urls = soup.select("table.d_book")
-        for book_url in book_site_urls:
-            book_url = book_url.select_one("a")["href"]
-            book_url = urljoin("https://tululu.org", book_url)
-            book_urls.append(book_url)
-        return book_urls
-
-    except requests.HTTPError:
-        print("Книга не найдена")
-    except requests.ConnectionError:
-        print("Произошла ошибка подключения.")
-        time.sleep(10)
+    soup = BeautifulSoup(response.text, "lxml")
+    book_site_urls = soup.select("table.d_book")
+    for book_url in book_site_urls:
+        book_url = book_url.select_one("a")["href"]
+        book_url = urljoin("https://tululu.org", book_url)
+        book_urls.append(book_url)
+    return book_urls
 
 
 def save_json(books_elements):
