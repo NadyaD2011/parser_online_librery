@@ -63,6 +63,7 @@ def main():
     books_elements = []
     for index in range(args.start_page, args.end_page):
         fantastic_books_url = f"https://tululu.org/l55/{index}"
+        book_urls = []
         try:
             book_urls = get_url_fantastic_book(fantastic_books_url)
         except requests.HTTPError:
