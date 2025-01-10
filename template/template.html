@@ -12,6 +12,31 @@
   </head>
   <body>
     <div class="container">
+      <div class="row justify-content-md-center">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            {% if page_number != 1 %}
+              <li class="page-item"><a class="page-link" href=./index{{page_number-1}}.html>Назад</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" style="pointer-events:none" href=./index{{page_number-1}}.html>Назад</a></li>
+            {% endif %}
+            {% for page in range(1, total_pages+1) %}
+              {% if page != page_number %}
+                <li class="page-item"><a class="page-link" href=./index{{page}}.html>{{ page }}</a></li>
+              {% else %}
+                <li class="page-item active"><a class="page-link" href=./index{{page}}.html>{{ page }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if page_number < total_pages %}
+              <li class="page-item"><a class="page-link" href=./index{{page_number+1}}.html>Вперёд</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" style="pointer-events:none" href=./index{{page_number+1}}.html>Вперёд</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <div class="container">
       {% for pair in paired_books %}
         <div class="row">
           {% for book in pair %}
@@ -19,7 +44,7 @@
               <div class="card mb-3" style="max-width: 540px;">
                 <div class="row no-gutters">
                   <div class="col-md-4">
-                    <img src='{{book.img_src}}' class="card-img" alt="обложка книги {{book.title}}">
+                    <img src='../{{book.img_src}}' class="card-img" alt="обложка книги {{book.title}}">
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
@@ -28,7 +53,7 @@
                         {% for genre in book.genres%}
                          <span class="badge badge-secondary"><p class="card-text">{{genre}}</p></span>
                         {% endfor %}
-                      <p class="card-text"><a href='{{book.book_path}}'>Читать</a></p>
+                      <p class="card-text"><a href='../{{book.book_path}}'>Читать</a></p>
                     </div>
                   </div>
                 </div>
