@@ -67,12 +67,12 @@ def main():
         try:
             book_urls = get_url_fantastic_book(fantastic_books_url)
         except requests.HTTPError:
-                print("Такой страницы нет")
-                continue
+            print("Такой страницы нет")
+            continue
         except requests.ConnectionError:
-                print("Произошла ошибка подключения.")
-                time.sleep(10)
-                continue
+            print("Произошла ошибка подключения.")
+            time.sleep(10)
+            continue
 
         for book_url in book_urls:
             url_safe_book = "https://tululu.org/txt.php"
