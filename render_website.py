@@ -2,7 +2,6 @@ import json
 import os
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from livereload import Server, shell
 from more_itertools import chunked
 
 
