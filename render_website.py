@@ -3,6 +3,7 @@ import os
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from more_itertools import chunked
+from livereload import Server, shell
 
 
 def read_json():
@@ -13,7 +14,7 @@ def read_json():
     return book_elements
 
 
-def main():
+def on_reload():
     page_folder = "pages"
     os.makedirs(page_folder, exist_ok=True)
     env = Environment(
@@ -34,6 +35,13 @@ def main():
         page_path = f"{page_folder}/index{number + 1}.html"
         with open(page_path, "w", encoding="utf8") as file:
             file.write(rendered_page)
+
+
+def main():
+    on_reload()
+    server = Server()
+    server.watch('/template/template.html', on_reload)
+    server.serve(root='.', default_filename='pages/index1.html')
 
 
 if __name__ == "__main__":
