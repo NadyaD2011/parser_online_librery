@@ -12,7 +12,7 @@ def read_json(name_json_file="book_elements.json"):
     with open(name_json_file, "r", encoding="utf-8") as my_file:
         json_file = my_file.read()
 
-    book_elements = json.loads(json_file)
+    book_elements = json.load(json_file)
     return book_elements
 
 
@@ -25,7 +25,6 @@ def on_reload():
     )
 
     template = env.get_template("/template/template.html")
-    book_elements = read_json()
     book_elements = read_json(name_json_file)
     books_pages = list(chunked(book_elements, 10))
     total_pages = len(books_pages)
