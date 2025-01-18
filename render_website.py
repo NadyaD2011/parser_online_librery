@@ -43,7 +43,7 @@ def on_reload():
 def main():
     on_reload()
     server = Server()
-    server.watch("/template/template.html", on_reload)
+    server.watch("template/template.html", on_reload)
     server.serve(root=".", default_filename="pages/index1.html")
 
 
