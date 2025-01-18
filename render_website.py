@@ -3,7 +3,7 @@ import os
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from more_itertools import chunked
-from livereload import Server, shell
+from livereload import Server
 
 
 def read_json():
