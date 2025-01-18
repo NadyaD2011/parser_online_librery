@@ -18,6 +18,7 @@ def on_reload():
     page_folder = "pages"
     name_json_file = "book_elements.json"
     number_books = 10
+    number_col = 2
     os.makedirs(page_folder, exist_ok=True)
     env = Environment(
         loader=FileSystemLoader("."), autoescape=select_autoescape(["html", "xml"])
@@ -30,7 +31,7 @@ def on_reload():
 
     for number, books_page in enumerate(books_pages, 1):
         rendered_page = template.render(
-            paired_books=chunked(books_page, 2),
+            paired_books=chunked(books_page, number_col),
             page_number=number,
             total_pages=total_pages,
         )
