@@ -6,8 +6,6 @@ from more_itertools import chunked
 from livereload import Server
 
 
-def read_json():
-    with open("book_elements.json", "r", encoding="utf-8") as my_file:
 def read_json(name_json_file="book_elements.json"):
     with open(name_json_file, "r", encoding="utf-8") as my_file:
         json_file = my_file.read()
