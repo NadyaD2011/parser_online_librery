@@ -8,6 +8,8 @@ from livereload import Server
 
 def read_json():
     with open("book_elements.json", "r", encoding="utf-8") as my_file:
+def read_json(name_json_file="book_elements.json"):
+    with open(name_json_file, "r", encoding="utf-8") as my_file:
         json_file = my_file.read()
 
     book_elements = json.loads(json_file)
@@ -16,6 +18,7 @@ def read_json():
 
 def on_reload():
     page_folder = "pages"
+    name_json_file = "book_elements.json"
     os.makedirs(page_folder, exist_ok=True)
     env = Environment(
         loader=FileSystemLoader("."), autoescape=select_autoescape(["html", "xml"])
@@ -23,6 +26,7 @@ def on_reload():
 
     template = env.get_template("/template/template.html")
     book_elements = read_json()
+    book_elements = read_json(name_json_file)
     books_pages = list(chunked(book_elements, 10))
     total_pages = len(books_pages)
 
