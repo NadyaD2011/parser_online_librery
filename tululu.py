@@ -12,21 +12,24 @@ def check_for_redirect(response):
         raise requests.HTTPError
 
 
-def download_txt(response, filename, folder="books/"):
+def download_txt(response, filename, folder="books/", folder_media="media"):
+    os.makedirs(folder_media, exist_ok=True)
     os.makedirs(folder, exist_ok=True)
     filename = f"{filename}.txt"
-    filepath = os.path.join(folder, filename)
+    filepath = os.path.join(folder_media, folder, filename)
 
     with open(filepath, "wb") as file:
         file.write(response.content)
 
 
-def download_image(img, book_url, folder="images/"):
+def download_image(img, book_url, folder="images/", folder_media="media"):
+    os.makedirs(folder_media, exist_ok=True)
     os.makedirs(folder, exist_ok=True)
+
     filename = urlparse(img)
     filename = os.path.basename(filename.path)
     filename = sanitize_filename(filename)
-    filepath = os.path.join(folder, filename)
+    filepath = os.path.join(folder_media, folder, filename)
 
     img_url = urljoin(book_url, img)
     response = requests.get(img_url)
@@ -77,6 +80,7 @@ def main():
     args = parser.parse_args()
 
     for book_id in range(args.start_id, args.end_id):
+        folder_media = "media"
         url = "https://tululu.org/txt.php"
         book_site_url = f"https://tululu.org/b{book_id}/"
         params = {"id": book_id}
