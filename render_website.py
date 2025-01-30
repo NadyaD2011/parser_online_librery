@@ -4,18 +4,18 @@ import os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from more_itertools import chunked
 from livereload import Server
+import argparse
 
 
-def read_json(name_json_file="book_elements.json"):
+def read_json(name_json_file):
     with open(name_json_file, "r", encoding="utf-8") as my_file:
         book_elements = json.load(my_file)
 
     return book_elements
 
 
-def on_reload():
+def on_reload(name_json_file):
     page_folder = "pages"
-    name_json_file = "book_elements.json"
     number_books = 10
     number_col = 2
     os.makedirs(page_folder, exist_ok=True)
@@ -40,9 +40,21 @@ def on_reload():
 
 
 def main():
-    on_reload()
+    parser = argparse.ArgumentParser(
+        description="Программа хочет получить путь до файла(json) с данными о книгах"
+    )
+    parser.add_argument(
+        "-name_json",
+        "--name_json_file",
+        help="Путь к каталогу с результатами парсинга",
+        default="book_elements.json",
+        action="store",
+        type=str
+    )
+    args = parser.parse_args()
+    on_reload(args.name_json_file)
     server = Server()
-    server.watch("template/template.html", on_reload)
+    server.watch("template/template.html", on_reload(args.name_json_file))
     server.serve(root=".", default_filename="pages/index1.html")
 
 
