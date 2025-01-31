@@ -7,13 +7,6 @@ from livereload import Server
 import argparse
 
 
-def read_json(name_json_file):
-    with open(name_json_file, "r", encoding="utf-8") as my_file:
-        book_elements = json.load(my_file)
-
-    return book_elements
-
-
 def on_reload():
     parser = argparse.ArgumentParser(
         description="Программа хочет получить путь до файла(json) с данными о книгах"
@@ -36,7 +29,10 @@ def on_reload():
     )
 
     template = env.get_template("/template/template.html")
-    book_elements = read_json(args.json_file)
+
+    with open(args.json_file, "r", encoding="utf-8") as my_file:
+        book_elements = json.load(my_file)
+    
     books_pages = list(chunked(book_elements, number_books))
     total_pages = len(books_pages)
 
