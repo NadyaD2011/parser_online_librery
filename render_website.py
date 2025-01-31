@@ -14,7 +14,19 @@ def read_json(name_json_file):
     return book_elements
 
 
-def on_reload(name_json_file):
+def on_reload():
+    parser = argparse.ArgumentParser(
+        description="Программа хочет получить путь до файла(json) с данными о книгах"
+    )
+    parser.add_argument(
+        "--json_file",
+        help="Путь к каталогу с результатами парсинга",
+        default="static/book_elements.json",
+        action="store",
+        type=str
+    )
+    args = parser.parse_args()
+
     page_folder = "pages"
     number_books = 10
     number_col = 2
@@ -24,7 +36,7 @@ def on_reload(name_json_file):
     )
 
     template = env.get_template("/template/template.html")
-    book_elements = read_json(name_json_file)
+    book_elements = read_json(args.json_file)
     books_pages = list(chunked(book_elements, number_books))
     total_pages = len(books_pages)
 
@@ -40,21 +52,9 @@ def on_reload(name_json_file):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Программа хочет получить путь до файла(json) с данными о книгах"
-    )
-    parser.add_argument(
-        "-name_json",
-        "--name_json_file",
-        help="Путь к каталогу с результатами парсинга",
-        default="book_elements.json",
-        action="store",
-        type=str
-    )
-    args = parser.parse_args()
-    on_reload(args.name_json_file)
+    on_reload()
     server = Server()
-    server.watch("template/template.html", on_reload(args.name_json_file))
+    server.watch("template/template.html", on_reload)
     server.serve(root=".", default_filename="pages/index1.html")
 
 
